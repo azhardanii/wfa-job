@@ -282,7 +282,7 @@ export default function AdminPage() {
         });
         loadLokers();
       } else {
-        setMessage({ text: res.error || "Gagal sinkronisasi.", type: "error" });
+        setMessage({ text: res.error || res.message || "Gagal sinkronisasi.", type: "error" });
       }
     } catch (err: any) {
       setMessage({ text: err.message, type: "error" });

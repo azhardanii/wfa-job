@@ -8,7 +8,7 @@ import { LokerFeed } from "@/components/loker/LokerFeed";
 import { ComingSoonModal } from "@/components/ui/ComingSoonModal";
 import { Smartphone, Monitor, Sparkles, ArrowLeft, Rocket } from "lucide-react";
 
-export function ComingSoonView({
+function ComingSoonView({
   title,
   desc,
   onBack,

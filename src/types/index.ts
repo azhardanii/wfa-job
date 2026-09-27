@@ -100,13 +100,15 @@ export interface Job {
   milestones?: Milestone[];
   spots?: SpotClaim[];
   dispute?: Dispute;
-  digitalContract?: {
-    contractNumber: string;
-    scope: string;
-    escrowRule: string;
-    autoReleaseHours: number;
-    platformFeePercent: number;
-  };
+  digitalContract?: DigitalContract;
+}
+
+export interface DigitalContract {
+  contractNumber: string;
+  scope: string;
+  escrowRule: string;
+  autoReleaseHours: number;
+  platformFeePercent: number;
 }
 
 export interface Transaction {

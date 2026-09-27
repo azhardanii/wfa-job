@@ -104,12 +104,19 @@ export const lokerService = {
   },
 
   // Seed sample data
-  async seedToCloud(pin?: string): Promise<{ success: boolean; message: string }> {
+  async seedToCloud(pin?: string): Promise<{ success: boolean; count: number; seededCount: number; message: string; error?: string }> {
     const adminPin = pin || getStoredAdminPin();
     const res = await LokerORM.seedSampleData(adminPin);
     return {
       success: res.success,
+      count: res.count,
+      seededCount: res.count,
       message: res.message,
+      error: res.success ? undefined : res.message,
     };
+  },
+
+  async seedToFirestore(pin?: string) {
+    return this.seedToCloud(pin);
   },
 };
