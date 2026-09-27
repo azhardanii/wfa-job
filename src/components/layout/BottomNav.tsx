@@ -5,7 +5,7 @@ import { useStore } from "@/context/StoreContext";
 import {
   Briefcase,
   Layers,
-  Database,
+  Search,
   Wallet as WalletIcon,
   User,
   Lock,
@@ -15,12 +15,16 @@ export function BottomNav() {
   const {
     activeTab,
     setActiveTab,
-    setShowAdminLokerModal,
     openComingSoon,
   } = useStore();
 
   const handleCenterClick = () => {
-    setShowAdminLokerModal(true);
+    setActiveTab("home");
+    const input = document.getElementById("job-search-input");
+    if (input) {
+      input.focus();
+      input.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   };
 
   const navItems = [
@@ -44,8 +48,8 @@ export function BottomNav() {
     {
       id: "center" as const,
       isCenter: true,
-      label: "Admin Loker",
-      icon: Database,
+      label: "Cari Loker",
+      icon: Search,
       isHighlight: true,
       isDisabled: false,
     },
@@ -82,7 +86,7 @@ export function BottomNav() {
                   onClick={handleCenterClick}
                   className="relative flex h-13 w-13 p-3 items-center justify-center rounded-full bg-gradient-to-tr from-teal-600 to-teal-400 text-white shadow-lg dark:shadow-teal-glow transition-all duration-200 hover:scale-105 active:scale-95 border-2 border-white dark:border-teal-900"
                   aria-label={item.label}
-                  title="Admin: Kelola & Tambah Loker Harian"
+                  title="Cari Lowongan Kerja WFA"
                 >
                   <item.icon className="h-6 w-6 stroke-[2.2]" />
                 </button>

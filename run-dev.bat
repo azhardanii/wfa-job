@@ -2,9 +2,9 @@
 cd /d "%~dp0"
 title WFA JOB Dev Server
 echo ===================================================
-echo   Starting WFA JOB Platform (Escrow & Trust System)
+echo   Starting WFA JOB Platform (Info Loker & Escrow)
 echo   Target URL: http://localhost:3000
-echo   Color Palette: Dark Teal & Soft Teal
-echo   Currency: $ USD ($1 = Rp. 17.000)
 echo ===================================================
-npm run dev
+set PATH=%~dp0bin;%PATH%
+"%~dp0bin\node.exe" "./node_modules/next/dist/bin/next" dev -p 3000
+pause

@@ -7,7 +7,6 @@ import {
   Wallet as WalletIcon,
   Sun,
   Moon,
-  Database,
   Lock,
 } from "lucide-react";
 import { formatUSD } from "@/lib/store";
@@ -19,7 +18,6 @@ export function Header() {
     setActiveTab,
     theme,
     toggleTheme,
-    setShowAdminLokerModal,
     openComingSoon,
   } = useStore();
 
@@ -43,19 +41,8 @@ export function Header() {
           </span>
         </div>
 
-        {/* Right: Admin Button, Theme Toggle, Wallet (disabled/soon), Bell */}
+        {/* Right: Theme Toggle, Wallet (disabled/soon), Bell */}
         <div className="flex items-center gap-1.5 shrink-0">
-          {/* Admin Loker Quick Button */}
-          <button
-            onClick={() => setShowAdminLokerModal(true)}
-            className="flex items-center gap-1 rounded-full border border-teal-500/40 bg-teal-600 hover:bg-teal-500 text-white px-2.5 py-1 text-[11px] font-bold shadow-sm transition-all active:scale-95"
-            title="Kelola Data Loker (Admin CRUD)"
-          >
-            <Database className="h-3 w-3" />
-            <span className="hidden xs:inline">Admin Loker</span>
-            <span className="xs:hidden">Admin</span>
-          </button>
-
           {/* Theme Switcher Button */}
           <button
             onClick={toggleTheme}

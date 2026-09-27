@@ -185,13 +185,26 @@ function setLocalCache(items: WfaLoker[]): void {
  */
 export class LokerORM {
   /**
-   * Find all loker records matching optional criteria
+   * Get cached lokers synchronously without any network delay
+   */
+  static getCachedLokers(): WfaLoker[] {
+    const list = getLocalCache();
+    list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return list;
+  }
+
+  /**
+   * Find all loker records matching optional criteria (with fast 2.5s network timeout)
    */
   static async findMany(filters?: Partial<LokerFilterOptions>): Promise<{ data: WfaLoker[]; source: "firestore" | "local" }> {
     if (isFirebaseConfigured()) {
       try {
         const url = `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/lokers?key=${firebaseConfig.apiKey}`;
-        const res = await fetch(url, { method: "GET" });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const res = await fetch(url, { method: "GET", signal: controller.signal });
+        clearTimeout(timeoutId);
+
         if (res.ok) {
           const json = await res.json();
           const docs = json.documents || [];
@@ -204,7 +217,7 @@ export class LokerORM {
           }
         }
       } catch (err) {
-        console.warn("[LokerORM] Cloud fetch error, serving cached data:", err);
+        // Fallback immediately on timeout or offline
       }
     }
 

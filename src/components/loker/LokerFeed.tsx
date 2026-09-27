@@ -6,8 +6,6 @@ import { lokerService } from "@/lib/lokerService";
 import { isFirebaseConfigured } from "@/lib/firebaseConfig";
 import { LokerCard } from "./LokerCard";
 import { LokerDetailModal } from "./LokerDetailModal";
-import { AdminLokerModal } from "@/components/admin/AdminLokerModal";
-import { useStore } from "@/context/StoreContext";
 import {
   Search,
   Globe2,
@@ -16,16 +14,18 @@ import {
   Sparkles,
   SlidersHorizontal,
   RefreshCw,
-  PlusCircle,
-  Database,
   Building,
   CheckCircle2,
 } from "lucide-react";
 
 export function LokerFeed() {
-  const { showAdminLokerModal, setShowAdminLokerModal } = useStore();
-  const [lokers, setLokers] = useState<WfaLoker[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [lokers, setLokers] = useState<WfaLoker[]>(() => {
+    if (typeof window !== "undefined") {
+      return lokerService.getCached();
+    }
+    return [];
+  });
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [source, setSource] = useState<"firestore" | "local">("local");
   const [selectedLoker, setSelectedLoker] = useState<WfaLoker | null>(null);
 
@@ -35,19 +35,27 @@ export function LokerFeed() {
   const [modeFilter, setModeFilter] = useState<"ALL" | JobWorkMode>("ALL");
 
   const loadLokers = async () => {
-    setLoading(true);
+    setIsRefreshing(true);
     try {
       const res = await lokerService.getAll();
-      setLokers(res.lokers);
-      setSource(res.source);
+      if (res.lokers && res.lokers.length > 0) {
+        setLokers(res.lokers);
+        setSource(res.source);
+      }
     } catch (err) {
       console.error("Failed to load lokers", err);
     } finally {
-      setLoading(false);
+      setIsRefreshing(false);
     }
   };
 
   useEffect(() => {
+    // Populate immediately from cache if available
+    const cached = lokerService.getCached();
+    if (cached.length > 0) {
+      setLokers(cached);
+    }
+    // Background silent revalidation
     loadLokers();
   }, []);
 
@@ -105,7 +113,7 @@ export function LokerFeed() {
                 className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-teal-200 transition-colors"
                 title="Segarkan Lowongan"
               >
-                <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
+                <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
               </button>
             </div>
           </div>
@@ -120,7 +128,7 @@ export function LokerFeed() {
             </p>
           </div>
 
-          {/* Stats Bar & Admin Button */}
+          {/* Stats Bar */}
           <div className="pt-2 flex items-center justify-between border-t border-white/15 gap-2 flex-wrap">
             <div className="flex items-center gap-2 text-[11px] font-semibold text-teal-200">
               <span>{lokers.length} Lowongan</span>
@@ -136,14 +144,10 @@ export function LokerFeed() {
               </span>
             </div>
 
-            {/* Quick Admin Access */}
-            <button
-              onClick={() => setShowAdminLokerModal(true)}
-              className="flex items-center gap-1 rounded-full bg-white text-teal-900 px-3 py-1 text-[11px] font-black hover:bg-teal-50 transition-all shadow-sm active:scale-95"
-            >
-              <Database className="h-3 w-3 text-teal-700" />
-              <span>Kelola Loker (Admin)</span>
-            </button>
+            <div className="flex items-center gap-1.5 text-[10px] text-teal-200/90 bg-white/10 px-2.5 py-0.5 rounded-full font-semibold">
+              <CheckCircle2 className="h-3 w-3 text-teal-300" />
+              <span>Lowongan Aktif Terverifikasi</span>
+            </div>
           </div>
         </div>
       </div>
@@ -251,7 +255,7 @@ export function LokerFeed() {
       </div>
 
       {/* Loker List Feed */}
-      {loading ? (
+      {lokers.length === 0 && isRefreshing ? (
         <div className="py-12 flex flex-col items-center justify-center space-y-3">
           <RefreshCw className="h-6 w-6 text-teal-600 animate-spin" />
           <p className="text-xs text-slate-500 dark:text-zinc-400 font-medium">
@@ -294,14 +298,6 @@ export function LokerFeed() {
       <LokerDetailModal
         loker={selectedLoker}
         onClose={() => setSelectedLoker(null)}
-      />
-
-      {/* Admin CRUD Modal */}
-      <AdminLokerModal
-        isOpen={showAdminLokerModal}
-        onClose={() => setShowAdminLokerModal(false)}
-        lokers={lokers}
-        onRefresh={loadLokers}
       />
     </div>
   );

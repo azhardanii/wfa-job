@@ -38,6 +38,11 @@ export function isAuthenticatedAdmin(pin?: string): boolean {
 }
 
 export const lokerService = {
+  // Synchronous immediate cache access (0ms delay)
+  getCached(): WfaLoker[] {
+    return LokerORM.getCachedLokers();
+  },
+
   // Read all records via ORM
   async getAll(): Promise<{ lokers: WfaLoker[]; source: "firestore" | "local" }> {
     const res = await LokerORM.findMany();

@@ -6,7 +6,6 @@ import { Header } from "@/components/layout/Header";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { LokerFeed } from "@/components/loker/LokerFeed";
 import { ComingSoonModal } from "@/components/ui/ComingSoonModal";
-import { AppLoader } from "@/components/ui/AppLoader";
 import { Smartphone, Monitor, Sparkles, ArrowLeft, Rocket } from "lucide-react";
 
 export function ComingSoonView({
@@ -51,20 +50,9 @@ export function ComingSoonView({
 export default function Home() {
   const { activeTab, setActiveTab, comingSoonModal, closeComingSoon } = useStore();
   const [deviceFrame, setDeviceFrame] = useState(false);
-  const [appLoading, setAppLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAppLoading(false);
-    }, 900);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <>
-      {/* Aesthetic App Loader */}
-      <AppLoader isLoading={appLoading} text="WFA JOB" subtext="Memuat Portal Info Loker WFA..." />
-
       <main className="min-h-screen bg-background text-foreground flex flex-col items-center justify-start relative transition-colors duration-200">
         {/* Desktop Device Frame Toggle Helper */}
         <div className="hidden lg:flex fixed top-3 right-3 z-50 items-center gap-2 rounded-full border border-slate-200 dark:border-teal-500/30 bg-white/90 dark:bg-teal-950/80 px-3 py-1.5 text-xs text-slate-700 dark:text-teal-200 backdrop-blur-md shadow-sm dark:shadow-teal-glow">
