@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { WfaLoker, JobWorkMode, JobLocationType } from "@/types/loker";
 import { lokerService } from "@/lib/lokerService";
+import { initialWfaLokers } from "@/lib/mockLoker";
 import { isFirebaseConfigured } from "@/lib/firebaseConfig";
 import { LokerCard } from "./LokerCard";
 import { LokerDetailModal } from "./LokerDetailModal";
@@ -19,12 +20,7 @@ import {
 } from "lucide-react";
 
 export function LokerFeed() {
-  const [lokers, setLokers] = useState<WfaLoker[]>(() => {
-    if (typeof window !== "undefined") {
-      return lokerService.getCached();
-    }
-    return [];
-  });
+  const [lokers, setLokers] = useState<WfaLoker[]>(initialWfaLokers);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [source, setSource] = useState<"firestore" | "local">("local");
   const [selectedLoker, setSelectedLoker] = useState<WfaLoker | null>(null);
@@ -95,25 +91,15 @@ export function LokerFeed() {
               Info Loker WFA Terkurasi
             </span>
 
-            {/* Database Status Indicator & Refresh */}
+            {/* Action Segarkan */}
             <div className="flex items-center gap-2">
-              <span
-                className={`inline-flex items-center gap-1 text-[10px] font-bold rounded-full px-2.5 py-0.5 border ${
-                  source === "firestore"
-                    ? "bg-emerald-950/80 text-emerald-300 border-emerald-500/40"
-                    : "bg-amber-950/80 text-amber-300 border-amber-500/40"
-                }`}
-              >
-                <span className={`h-1.5 w-1.5 rounded-full ${source === "firestore" ? "bg-emerald-400" : "bg-amber-400"}`} />
-                {source === "firestore" ? "Firestore Realtime" : "Database Dinamis"}
-              </span>
-
               <button
                 onClick={loadLokers}
-                className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-teal-200 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-full bg-white/10 hover:bg-white/20 px-2.5 py-1 text-[11px] font-semibold text-teal-200 transition-all border border-white/10 active:scale-95"
                 title="Segarkan Lowongan"
               >
                 <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
+                <span className="hidden sm:inline">Segarkan</span>
               </button>
             </div>
           </div>
