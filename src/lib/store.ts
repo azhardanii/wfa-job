@@ -82,6 +82,20 @@ export function useWfaStore() {
   const [showNotificationDrawer, setShowNotificationDrawer] = useState(false);
   const [showPostJobModal, setShowPostJobModal] = useState(false);
   const [celebration, setCelebration] = useState<{ show: boolean; title: string; message: string; amount?: number } | null>(null);
+  const [showAdminLokerModal, setShowAdminLokerModal] = useState(false);
+  const [comingSoonModal, setComingSoonModal] = useState<{
+    isOpen: boolean;
+    featureName?: string;
+    description?: string;
+  }>({ isOpen: false });
+
+  const openComingSoon = (featureName: string, description?: string) => {
+    setComingSoonModal({ isOpen: true, featureName, description });
+  };
+
+  const closeComingSoon = () => {
+    setComingSoonModal({ isOpen: false });
+  };
 
   // Theme State (Default: light)
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -854,6 +868,11 @@ export function useWfaStore() {
     setShowPostJobModal,
     celebration,
     setCelebration,
+    showAdminLokerModal,
+    setShowAdminLokerModal,
+    comingSoonModal,
+    openComingSoon,
+    closeComingSoon,
     // Filters
     searchQuery,
     setSearchQuery,

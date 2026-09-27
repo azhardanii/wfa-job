@@ -4,39 +4,66 @@ import React, { useState, useEffect } from "react";
 import { useStore } from "@/context/StoreContext";
 import { Header } from "@/components/layout/Header";
 import { BottomNav } from "@/components/layout/BottomNav";
-import { JobFeed } from "@/components/jobs/JobFeed";
-import { MyJobsView } from "@/components/my-jobs/MyJobsView";
-import { WalletView } from "@/components/wallet/WalletView";
-import { ProfileView } from "@/components/profile/ProfileView";
-import { JobDetailModal } from "@/components/jobs/JobDetailModal";
-import { PostJobWizard } from "@/components/jobs/PostJobWizard";
-import { OfferProposalModal } from "@/components/jobs/OfferProposalModal";
-import { TopUpModal } from "@/components/wallet/TopUpModal";
-import { WithdrawModal } from "@/components/wallet/WithdrawModal";
-import { JobChatModal } from "@/components/chat/JobChatModal";
-import { DisputeModal } from "@/components/dispute/DisputeModal";
-import { RatingModal } from "@/components/rating/RatingModal";
-import { NotificationDrawer } from "@/components/notifications/NotificationDrawer";
-import { CelebrationModal } from "@/components/ui/CelebrationModal";
+import { LokerFeed } from "@/components/loker/LokerFeed";
+import { ComingSoonModal } from "@/components/ui/ComingSoonModal";
 import { AppLoader } from "@/components/ui/AppLoader";
-import { Smartphone, Monitor } from "lucide-react";
+import { Smartphone, Monitor, Sparkles, ArrowLeft, Rocket } from "lucide-react";
+
+export function ComingSoonView({
+  title,
+  desc,
+  onBack,
+}: {
+  title: string;
+  desc: string;
+  onBack: () => void;
+}) {
+  return (
+    <div className="py-12 px-4 text-center space-y-4">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400">
+        <Rocket className="h-8 w-8 animate-bounce" />
+      </div>
+      <div>
+        <span className="inline-block rounded-full bg-amber-100 dark:bg-amber-950 px-3 py-1 text-[10px] font-black text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700/50 mb-2">
+          TAHAP BERIKUTNYA • COMING SOON
+        </span>
+        <h2 className="text-lg font-black text-slate-900 dark:text-white">
+          {title}
+        </h2>
+        <p className="mt-1 text-xs text-slate-600 dark:text-zinc-400 max-w-sm mx-auto leading-relaxed">
+          {desc}
+        </p>
+      </div>
+
+      <div className="pt-2">
+        <button
+          onClick={onBack}
+          className="inline-flex items-center gap-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 text-xs font-bold shadow-md transition-all"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span>Kembali ke Info Loker WFA</span>
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
-  const { activeTab } = useStore();
+  const { activeTab, setActiveTab, comingSoonModal, closeComingSoon } = useStore();
   const [deviceFrame, setDeviceFrame] = useState(false);
   const [appLoading, setAppLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setAppLoading(false);
-    }, 1100);
+    }, 900);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <>
-      {/* Aesthetic App Loader with logo-vertikal.png */}
-      <AppLoader isLoading={appLoading} text="WFA JOB" subtext="Memuat Ekosistem Escrow..." />
+      {/* Aesthetic App Loader */}
+      <AppLoader isLoading={appLoading} text="WFA JOB" subtext="Memuat Portal Info Loker WFA..." />
 
       <main className="min-h-screen bg-background text-foreground flex flex-col items-center justify-start relative transition-colors duration-200">
         {/* Desktop Device Frame Toggle Helper */}
@@ -68,27 +95,44 @@ export default function Home() {
 
           {/* Dynamic Content Views */}
           <div className="px-3.5 py-4 sm:px-5">
-            {activeTab === "home" && <JobFeed />}
-            {activeTab === "my-jobs" && <MyJobsView />}
-            {activeTab === "wallet" && <WalletView />}
-            {activeTab === "profile" && <ProfileView />}
+            {activeTab === "home" && <LokerFeed />}
+
+            {activeTab === "my-jobs" && (
+              <ComingSoonView
+                title="Fitur Job Saya & Kontrak Escrow"
+                desc="Sistem penyerahan pekerjaan, milestone, dan auto-release kontrak akan dirilis pada pembaruan tahap berikutnya."
+                onBack={() => setActiveTab("home")}
+              />
+            )}
+
+            {activeTab === "wallet" && (
+              <ComingSoonView
+                title="Fitur Dompet Escrow ($)"
+                desc="Penampungan saldo aman rekber dan transfer otomatis ke rekening bank lokal sedang disiapkan."
+                onBack={() => setActiveTab("home")}
+              />
+            )}
+
+            {activeTab === "profile" && (
+              <ComingSoonView
+                title="Fitur Profil & Verifikasi KYC"
+                desc="Manajemen identitas talenta profesional terverifikasi dan portofolio proyek akan segera hadir."
+                onBack={() => setActiveTab("home")}
+              />
+            )}
           </div>
 
           {/* Bottom Navigation */}
           <BottomNav />
         </div>
 
-        {/* Modals & Dialogs */}
-        <JobDetailModal />
-        <PostJobWizard />
-        <OfferProposalModal />
-        <TopUpModal />
-        <WithdrawModal />
-        <JobChatModal />
-        <DisputeModal />
-        <RatingModal />
-        <NotificationDrawer />
-        <CelebrationModal />
+        {/* Global Coming Soon Modal Popup */}
+        <ComingSoonModal
+          isOpen={comingSoonModal.isOpen}
+          onClose={closeComingSoon}
+          featureName={comingSoonModal.featureName}
+          description={comingSoonModal.description}
+        />
       </main>
     </>
   );

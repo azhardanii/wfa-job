@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useStore } from "@/context/StoreContext";
-import { formatDual } from "@/lib/store";
+import { formatDual, formatUSD } from "@/lib/store";
 import { Trophy, X } from "lucide-react";
 
 export function CelebrationModal() {
